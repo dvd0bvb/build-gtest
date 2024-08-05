@@ -15,7 +15,7 @@ jobs:
 
     - name: Download and Install prebuilt libc++ with msan
       run: | 
-        wget $(wget -q -O - https://api.github.com/repos/dvd0bvb/libcxx-with-msan/releases/latest  |  jq -r '.assets[] | select(.name | contains ("deb")) | .browser_download_url')
+        wget $(wget -q -O - https://api.github.com/repos/dvd0bvb/libcxx-with-msan/releases/latest  |  jq -r '.assets[] | select(.name | contains ("deb")) | .browser_download_url')        
         sudo dpkg -i libc++-with-msan-v1.0.0.deb
 
     - name: Build gtest package
