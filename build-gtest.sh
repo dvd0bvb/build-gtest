@@ -8,6 +8,6 @@ cmake -B build \
     -G "Unix Makefiles" \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_CXX_FLAGS=$MSAN_CFLAGS \
-    -DCMAKE_C_FLAGS=$MSAN_CFLAGS
+    -DCMAKE_CXX_FLAGS="$MSAN_CFLAGS" \
+    -DCMAKE_C_FLAGS="$MSAN_CFLAGS"
 cmake --build build
