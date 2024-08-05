@@ -17,10 +17,27 @@ jobs:
       run: | 
         wget $(wget -q -O - https://api.github.com/repos/dvd0bvb/libcxx-with-msan/releases/latest  |  jq -r '.assets[] | select(.name | contains ("deb")) | .browser_download_url')        
         sudo dpkg -i libc++-with-msan-v1.0.0.deb
-        find /usr/lib -name libc++*
 
     - name: Build gtest package
       run: |
         ./build-gtest.sh
         ./build-deb.sh
+
+    - name: Get Latest Release
+      uses: pozetroninc/github-action-get-latest-release@master
+      id: latest-release
+      with:
+        owner: dvd0bvb
+        repository: ${{ github.repository }}
+        excludes: prerelease, draft
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: gtest-with-msan.deb
+        asset_name: gtest-with-msan-${{ steps.latest-release.outputs.release }}.deb
+        tag: ${{ steps.latest-release.outputs.release }}
+        overwrite: true
       
