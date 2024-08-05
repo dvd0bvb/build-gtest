@@ -1,4 +1,4 @@
-name: ASAN, UBSAN, LSAN
+name: GTest with MSAN
 
 on:
   workflow_dispatch: 
