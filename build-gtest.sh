@@ -1,4 +1,4 @@
-MSAN_CFLAGS="-fsanitize=memory -stdlib=libc++ -L/path/to/libcxx_msan/lib -lc++abi"
+MSAN_CFLAGS="-fsanitize=memory -stdlib=libc++ -L/usr/lib -lc++abi"
 
 git clone https://github.com/google/googletest.git --branch main --depth 1
 pushd googletest
