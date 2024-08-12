@@ -1,4 +1,4 @@
-MSAN_CFLAGS="fsanitize=memory -fsanitize-memory-track-origins -fPIE -pie -fno-omit-frame-pointer -nostdinc++ -nostdlib++ -isystem /usr/include/libcxx-msan/c++/v1 -L /usr/lib/libcxx-msan -Wl,-rpath,/usr/lib/libcxx-msan -lc++"
+MSAN_CFLAGS="-fsanitize=memory -fsanitize-memory-track-origins -fPIE -pie -fno-omit-frame-pointer -nostdinc++ -nostdlib++ -isystem /usr/include/libcxx-msan/c++/v1 -L /usr/lib/libcxx-msan -Wl,-rpath,/usr/lib/libcxx-msan -lc++"
 
 git clone https://github.com/google/googletest.git --branch main --depth 1
 pushd googletest
