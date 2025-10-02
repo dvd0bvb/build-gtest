@@ -94,6 +94,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           draft: false
-          tag: ${{ github.event.inputs.version }}
+          tag: ${{ github.event.inputs.version }}-libcxx-${{ github.event.inputs.libcxx-version }}
           artifacts: googletest*
           token: ${{ secrets.GITHUB_TOKEN }}
