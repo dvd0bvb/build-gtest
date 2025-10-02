@@ -44,6 +44,7 @@ jobs:
           -DCMAKE_CXX_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
           -DCMAKE_C_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
       - name: Build
+        working-directory: googletest
         run: cmake --build build 
       - name: Make output dir
         id: output-dir
