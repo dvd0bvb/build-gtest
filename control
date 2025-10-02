@@ -1,0 +1,5 @@
+Package: PACKAGE_NAME
+Version: VERSION_STRING
+Maintainer: David Brill
+Architecture: all
+Description: Package contiaining Google Test binaries and headers

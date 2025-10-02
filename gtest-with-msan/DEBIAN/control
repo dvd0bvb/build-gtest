@@ -1,5 +1,0 @@
-Package: gtest-with-msan
-Version: 1.0
-Maintainer: David Brill
-Architecture: all
-Description: Build GTest with MSan

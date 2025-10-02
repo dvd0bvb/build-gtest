@@ -1,0 +1,94 @@
+name: Build Google Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Gtest version to build
+        required: true
+      libcxx-version:
+        description: libcxx version to build against
+        required: true    
+
+jobs:
+  build:
+    strategy: 
+      matrix:
+          msan: [true, false]
+          
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install libc++
+        uses: dvd0bvb/install-libcxx@v1
+        with:
+          libcxx_version: ${{ github.event.inputs.libcxx-version }}
+          msan: ${{ matrix.msan }}
+      - name: Checkout GTest
+        run: git clone --depth 1 --branch ${{ github.event.inputs.version }} https://github.com/google/googletest.git
+      - id: msan-flags
+        run: |
+          MSAN_ENABLED=${{ matrix.msan }}
+          if [[ "$MSAN_ENABLED" = "true" ]]; then
+            MSAN_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins -fPIE -pie -fno-omit-frame-pointer -isystem /usr/local/include/libcxx/c++/v1 -L /usr/local/lib/libcxx -lc++ -lc++abi"
+          fi
+          echo "msan-flags=$MSAN_FLAGS" >> $GITHUB_OUTPUT
+      - name: Configure
+        working-directory: googletest
+        run: >
+          cmake -B build -S .
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
+          -DCMAKE_CXX_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
+          -DCMAKE_C_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
+      - name: Build
+        run: cmake --build build 
+      - name: Make output dir
+        id: output-dir
+        run: |
+          MSAN_ENABLED=${{ matrix.msan }}
+          if [ "$MSAN_ENABLED" = "true" ]; then
+            OUT_DIR="googletest-${{ github.event.inputs.version }}-libcxx${{ github.event.inputs.libcxx-version }}-msan"
+          else
+            OUT_DIR="googletest-${{ github.event.inputs.version }}-libcxx${{ github.event.inputs.libcxx-version }}"
+          fi
+          echo "out-dir=$OUT_DIR" >> $GITHUB_OUTPUT
+      - name: Package
+        env: 
+          OUT_DIR: ${{ steps.output-dir.outputs.out-dir }}
+        run: |
+          INCLUDE_DIR=usr/local/include/googletest
+          LIB_DIR=usr/local/lib/googletest
+          mkdir -p $OUT_DIR/$INCLUDE_DIR
+          mkdir -p $OUT_DIR/$LIB_DIR
+          cp -r googletest/build/include/* $OUT_DIR/$INCLUDE_DIR
+          cp -r googletest/build/lib/* $OUT_DIR/$LIB_DIR
+          mkdir -p $OUT_DIR/DEBIAN
+          sed -e "s/PACKAGE_NAME/$OUT_DIR/g" -e "s/VERSION_STRING/${{ github.event.inputs.version }}-libcxx${{ github.event.inputs.libcxx-version }}/g" control >> $OUT_DIR/DEBIAN/control
+          dpkg-deb --build $OUT_DIR
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: ${{ steps.output-dir.outputs.out-dir }}
+          path: "*.deb"
+
+  upload:
+    runs-on: ubuntu-24.04
+    needs: [build]
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      - name: Move artifacts
+        run: |
+          mv */* .
+          find . -type d -empty -delete
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: false
+          tag: ${{ github.event.inputs.version }}
+          artifacts: googletest*
+          token: ${{ secrets.GITHUB_TOKEN }}
