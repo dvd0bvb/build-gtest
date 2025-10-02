@@ -61,15 +61,13 @@ jobs:
         env: 
           OUT_DIR: ${{ steps.output-dir.outputs.out-dir }}
         run: |
-          INCLUDE_DIR=usr/local/include/googletest
-          LIB_DIR=usr/local/lib/googletest
+          cmake --install googletest/build --prefix $(pwd)/install
+          INCLUDE_DIR=usr/local/include
+          LIB_DIR=usr/local/lib/
           mkdir -p $OUT_DIR/$INCLUDE_DIR
-          mkdir -p $OUT_DIR/$INCLUDE_DIR/gtest
-          mkdir -p $OUT_DIR/$INCLUDE_DIR/gmock
           mkdir -p $OUT_DIR/$LIB_DIR
-          cp -r googletest/googletest/include/gtest/* $OUT_DIR/$INCLUDE_DIR/gtest
-          cp -r googletest/googlemock/include/gmock/* $OUT_DIR/$INCLUDE_DIR/gmock
-          cp -r googletest/build/lib/* $OUT_DIR/$LIB_DIR
+          cp -r install/include/* $OUT_DIR/$INCLUDE_DIR
+          cp -r install/lib/* $OUT_DIR/$LIB_DIR
           mkdir -p $OUT_DIR/DEBIAN
           sed -e "s/PACKAGE_NAME/$OUT_DIR/g" -e "s/VERSION_STRING/${{ github.event.inputs.version }}/g" control >> $OUT_DIR/DEBIAN/control
           dpkg-deb --build $OUT_DIR

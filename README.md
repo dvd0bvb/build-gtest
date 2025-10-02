@@ -1,6 +1,6 @@
 # Prebuilt Google Test with libc++
 
-Prebuilt Google Test binaries and headers. This repository provides these as debian packages. Binaries are provided both with and without memory sanitizer instrumentation. The debian package ending in `-msan` contains those artifacts with memory sanitizer instrumentation. The debian packages will install headers to `/usr/local/include/googletest` and binaries to `/usr/local/lib/googletest`.
+Prebuilt Google Test binaries and headers. This repository provides these as debian packages. Binaries are provided both with and without memory sanitizer instrumentation. The debian package ending in `-msan` contains those artifacts with memory sanitizer instrumentation. The debian packages will install headers to `/usr/local/include` and binaries to `/usr/local/lib`.
 
 The prebuilt binaries here are maintained to support the GitHub action [install-gtest](https://github.com/dvd0bvb/install-gtest) but can be used however you'd like.
 
