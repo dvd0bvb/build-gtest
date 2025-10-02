@@ -31,7 +31,7 @@ jobs:
         run: |
           MSAN_ENABLED=${{ matrix.msan }}
           if [[ "$MSAN_ENABLED" = "true" ]]; then
-            MSAN_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins -fPIE -pie -fno-omit-frame-pointer -isystem /usr/local/include/libcxx/c++/v1 -L /usr/local/lib/libcxx -lc++ -lc++abi"
+            MSAN_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins -fPIE -pie -fno-omit-frame-pointer -isystem /usr/local/include/libcxx/c++/v1 -L/usr/local/lib/libcxx -lc++ -lc++abi"
           fi
           echo "msan-flags=$MSAN_FLAGS" >> $GITHUB_OUTPUT
       - name: Configure
