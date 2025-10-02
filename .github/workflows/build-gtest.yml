@@ -41,8 +41,8 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_C_COMPILER=clang
           -DCMAKE_CXX_COMPILER=clang++
-          -DCMAKE_CXX_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
-          -DCMAKE_C_FLAGS=${{ steps.msan-flags.outputs.msan-flags }}
+          -DCMAKE_CXX_FLAGS="${{ steps.msan-flags.outputs.msan-flags }}"
+          -DCMAKE_C_FLAGS="${{ steps.msan-flags.outputs.msan-flags }}"
       - name: Build
         working-directory: googletest
         run: cmake --build build 
